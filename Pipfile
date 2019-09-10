@@ -36,6 +36,7 @@ django-storages = {extras = ["boto3"],version = "==1.7.2"}
 django-anymail = {extras = ["mailgun"],version = "==6.1.0"}
 django-debug-toolbar = "*"
 django-extensions = "*"
+orm-choices = "*"
 
 [requires]
 python_version = "3.7"
