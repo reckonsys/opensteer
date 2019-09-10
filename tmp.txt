@@ -1,0 +1,8 @@
+Automatic DateTime Fields
+
+created_at 486K
+updated_at 323k
+created_on 57k
+updated_on 15k
+modified_at 20k
+modified_on 10k

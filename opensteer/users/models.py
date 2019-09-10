@@ -1,10 +1,12 @@
-from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField
 from django.urls import reverse
+from django.db.models import CharField
+from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 
+from opensteer.core.models import BaseModel
 
-class User(AbstractUser):
+
+class User(AbstractUser, BaseModel):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.

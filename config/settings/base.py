@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "opensteer.core.apps.CoreConfig",
     "opensteer.users.apps.UsersConfig",
     # Your stuff: custom apps go here
 ]
