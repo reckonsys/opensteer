@@ -82,6 +82,7 @@ LOCAL_APPS = [
     # Your stuff: custom apps go here
     "opensteer.teams.apps.TeamsConfig",
     "opensteer.standups.apps.StandupsConfig",
+    "opensteer.checkins.apps.CheckinsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
