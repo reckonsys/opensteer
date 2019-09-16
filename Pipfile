@@ -37,6 +37,7 @@ django-anymail = {extras = ["mailgun"],version = "==6.1.0"}
 django-debug-toolbar = "*"
 django-extensions = "*"
 orm-choices = "*"
+arrow = "*"
 
 [requires]
 python_version = "3.7"

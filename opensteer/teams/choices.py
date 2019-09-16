@@ -2,7 +2,10 @@ from orm_choices import choices
 
 
 @choices
-class MembershipRole:
+class QuestionKind:
     class Meta:
-        REGULAR = [1, 'Regular']
-        MANAGER = [2, 'Manager']
+        TEXT = [1, 'Text']
+        NUMERIC = [2, 'Numeric']
+        BOOLEAN = [3, 'Boolean']
+        CHOICE = [4, 'Choice']
+        MULTIPLE_CHOICE = [5, 'Multiple Choice']
