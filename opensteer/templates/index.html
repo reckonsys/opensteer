@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+{% if request.user.is_authenticated %}
+{% include 'index_user.html' %}
+{% else %}
+{% include 'index_public.html' %}
+{% endif %}
+{% endblock %}
