@@ -296,3 +296,8 @@ INSTALLED_APPS += ["compressor"]
 STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+GRAPH_MODELS = {
+  # 'all_applications': True,
+  'group_models': True,
+}
