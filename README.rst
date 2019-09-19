@@ -13,6 +13,11 @@ Open Employee Engagement & Performance Software
 
 :License: MIT
 
+Wiki Page
+---------
+
+Please head over to Wiki Page (https://github.com/reckonsys/opensteer/wiki) for a detailed description
+
 
 Settings
 --------
