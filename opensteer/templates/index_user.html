@@ -1,3 +1,19 @@
+{% if organizations %}
+<h1>Organizations</h1>
+<div class="row">
+  {% for organization in organizations %}
+  <div class="col-sm-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ organization.name }}</h5>
+        <p class="card-text">Owner: {{organization.user.username}}</p>
+        <a class="card-link" href="{% url 'organizations:detail' organization.id %}" role="button">View</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
 <div class="jumbotron">
   <h1 class="display-4">Hello there, {{request.user.username}}!</h1>
   <p class="lead">
@@ -7,3 +23,4 @@
   <p>Let's create an organization for you!</p>
   <a class="btn btn-success btn-lg" href="{% url 'organizations:new' %}" role="button">Create Organization</a>
 </div>
+{% endif %}
