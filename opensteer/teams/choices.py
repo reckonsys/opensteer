@@ -9,3 +9,15 @@ class QuestionKind:
         BOOLEAN = [3, 'Boolean']
         CHOICE = [4, 'Choice']
         MULTIPLE_CHOICE = [5, 'Multiple Choice']
+
+
+@choices
+class DayOfWeek:
+    class Meta:
+        SUNDAY = [0, 'Sunday']
+        MONDAY = [1, 'Monday']
+        TUESDAY = [2, 'Tuesday']
+        WEDNESDAY = [3, 'Wednesday']
+        THURSDAY = [4, 'Thursday']
+        FRIDAY = [5, 'Friday']
+        SATURDAY = [6, 'Saturday']

@@ -1,0 +1,5 @@
+{% extends 'base.html'%}
+{% block content %}
+<h1>{{organization.name}}</h1>
+<a class="btn btn-info btn-sm" href="{% url 'organizations:edit' organization.id %}" role="button">Edit</a>
+{% endblock %}

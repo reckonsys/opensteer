@@ -7,7 +7,7 @@ from django.db.models import (
 
 from opensteer.core.models import BaseModel
 from opensteer.users.choices import UserRole
-from opensteer.teams.choices import QuestionKind
+from opensteer.teams.choices import QuestionKind, DayOfWeek
 from opensteer.teams.utils import time_to_local, TIMEZONES
 
 User = get_user_model()
@@ -16,12 +16,14 @@ User = get_user_model()
 
 class Organization(BaseModel):
     name = CharField(max_length=100)
-    checkin_day = PSIF(validators=[MaxValueValidator(5)])
-    checkin_hour = PSIF(validators=[MaxValueValidator(59)])
-    checkin_minute = PSIF(validators=[MaxValueValidator(59)])
+    timezone = CharField(max_length=32, default='UTC', choices=TIMEZONES)
     standup_hour = PSIF(validators=[MaxValueValidator(59)])
     standup_minute = PSIF(validators=[MaxValueValidator(59)])
-    timezone = CharField(max_length=32, default='UTC', choices=TIMEZONES)
+    checkin_hour = PSIF(validators=[MaxValueValidator(59)])
+    checkin_minute = PSIF(validators=[MaxValueValidator(59)])
+    checkin_day = PSIF(
+        validators=[MaxValueValidator(6)],
+        default=DayOfWeek.THURSDAY, choices=DayOfWeek.CHOICES)
     owner = ForeignKey(
         User, on_delete=CASCADE, related_name='owned_organizations')
 

@@ -7,3 +7,13 @@
   background-color: #f2dede;
   border-color: #eed3d7;
   color: #b94a48; }
+
+.form-fix-by-2 div {
+  width: 50%;
+  padding-left: 10px;
+  padding-right: 10px; }
+
+.form-fix-by-3 div {
+  width: 33%;
+  padding-left: 10px;
+  padding-right: 10px; }
