@@ -1,11 +1,12 @@
 from django.views import View
 from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from opensteer.teams.forms import OrganizationForm
 from opensteer.teams.models import Organization
 
 
-class OrganizationEditView(View):
+class OrganizationEditView(LoginRequiredMixin, View):
     form_class = OrganizationForm
     template_name = 'teams/organization_form.html'
 
