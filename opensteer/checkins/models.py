@@ -13,18 +13,20 @@ User = get_user_model()
 
 class Checkin(BaseModel):
     is_active = BooleanField(default=True)
-    team = ForeignKey(Team, on_delete=CASCADE)
     year = PSIF(validators=[MaxValueValidator(2047)])
     week_of_year = PSIF(validators=[MaxValueValidator(52)])
+    team = ForeignKey(Team, on_delete=CASCADE, related_name='checkins')
 
     class Meta:
         unique_together = ['team', 'year', 'week_of_year']
 
 
 class CheckinQuestion(BaseModel):
-    team = ForeignKey(Team, on_delete=CASCADE)
-    question = ForeignKey(Question, on_delete=CASCADE)
-    mandatory = BooleanField(default=True)
+    is_mandatory = BooleanField(default=True)
+    team = ForeignKey(
+        Team, on_delete=CASCADE, related_name='checkin_questions')
+    question = ForeignKey(
+        Question, on_delete=CASCADE, related_name='checkin_questions')
 
     class Meta:
         unique_together = ['team', 'question']
@@ -32,8 +34,10 @@ class CheckinQuestion(BaseModel):
 
 class CheckinResponse(BaseModel):
     text = CharField(max_length=500)
-    member = ForeignKey(Member, on_delete=CASCADE)
-    question = ForeignKey(Question, on_delete=CASCADE)
+    member = ForeignKey(
+        Member, on_delete=CASCADE, related_name='checkin_responses')
+    question = ForeignKey(
+        Question, on_delete=CASCADE, related_name='checkin_responses')
 
     class Meta:
         unique_together = ['member', 'question']

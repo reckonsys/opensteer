@@ -1,18 +1,26 @@
 {% if organizations %}
 <h1>Organizations</h1>
-<div class="row">
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Organization</th>
+      <th scope="col">Teams</th>
+      <th scope="col">Staffs</th>
+      <th scope="col">Questions</th>
+    </tr>
+  </thead>
+  <tbody>
   {% for organization in organizations %}
-  <div class="col-sm-3">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{ organization.name }}</h5>
-        <p class="card-text">Owner: {{organization.user.username}}</p>
-        <a class="card-link" href="{% url 'organizations:detail' organization.id %}" role="button">View</a>
-      </div>
-    </div>
-  </div>
+    <tr>
+      <td><a class="card-link" href="{% url 'organizations:detail' organization.id %}" role="button">
+          {{ organization.name }}</a></td>
+      <td>{{ organization.teams.count }}</td>
+      <td>{{ organization.staffs.count }}</td>
+      <td>{{ organization.questions.count }}</td>
+    </tr>
   {% endfor %}
-</div>
+  </tbody>
+</table>
 {% else %}
 <div class="jumbotron">
   <h1 class="display-4">Hello there, {{request.user.username}}!</h1>

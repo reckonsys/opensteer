@@ -17,9 +17,9 @@ User = get_user_model()
 class Organization(BaseModel):
     name = CharField(max_length=100)
     timezone = CharField(max_length=32, default='UTC', choices=TIMEZONES)
-    standup_hour = PSIF(validators=[MaxValueValidator(59)])
+    standup_hour = PSIF(validators=[MaxValueValidator(23)])
     standup_minute = PSIF(validators=[MaxValueValidator(59)])
-    checkin_hour = PSIF(validators=[MaxValueValidator(59)])
+    checkin_hour = PSIF(validators=[MaxValueValidator(23)])
     checkin_minute = PSIF(validators=[MaxValueValidator(59)])
     checkin_day = PSIF(
         validators=[MaxValueValidator(6)],
@@ -43,17 +43,17 @@ class Question(BaseModel):
     title = CharField(max_length=200)
     is_active = BooleanField(default=True)
     options = ArrayField(CharField(max_length=100))
-    organization = ForeignKey(Organization, on_delete=CASCADE)
+    organization = ForeignKey(
+        Organization, on_delete=CASCADE, related_name='questions')
     kind = PSIF(default=QuestionKind.TEXT, choices=QuestionKind.CHOICES)
 
 
 class Staff(BaseModel):
     title = CharField(max_length=100)
-    user = ForeignKey(User, on_delete=CASCADE)
-    organization = ForeignKey(Organization, on_delete=CASCADE)
     role = PSIF(default=UserRole.REGULAR, choices=UserRole.CHOICES)
-    invited_by = ForeignKey(
-        User, on_delete=CASCADE, related_name='invited_staffs')
+    user = ForeignKey(User, on_delete=CASCADE, related_name='staffs')
+    organization = ForeignKey(
+        Organization, on_delete=CASCADE, related_name='staffs')
 
     class Meta:
         unique_together = ['user', 'organization']
@@ -61,16 +61,17 @@ class Staff(BaseModel):
 
 class Team(BaseModel):
     name = CharField(max_length=100)
-    organization = ForeignKey(Organization, on_delete=CASCADE)
+    organization = ForeignKey(
+        Organization, on_delete=CASCADE, related_name='teams')
 
     class Meta:
         unique_together = ['name', 'organization']
 
 
 class Member(BaseModel):
-    team = ForeignKey(Team, on_delete=CASCADE)
-    staff = ForeignKey(Staff, on_delete=CASCADE)
     role = PSIF(default=UserRole.REGULAR, choices=UserRole.CHOICES)
+    team = ForeignKey(Team, on_delete=CASCADE, related_name='members')
+    staff = ForeignKey(Staff, on_delete=CASCADE, related_name='members')
 
     class Meta:
         unique_together = ['team', 'staff']
