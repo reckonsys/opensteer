@@ -194,14 +194,6 @@
             "index": "pypi",
             "version": "==1.5.0"
         },
-        "django-compressor": {
-            "hashes": [
-                "sha256:47c86347f75c64954a06afbbfc820a750619e10c23a49272b865020a407b7edd",
-                "sha256:da9ee5ce4fc8b9211dcecd2229520514a4ba9ac3bcdc59b48092ec4d7f6b96b0"
-            ],
-            "index": "pypi",
-            "version": "==2.3"
-        },
         "django-crispy-forms": {
             "hashes": [
                 "sha256:5952bab971110d0b86c278132dae0aa095beee8f723e625c3d3fa28888f1675f",

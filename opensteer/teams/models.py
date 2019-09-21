@@ -11,7 +11,6 @@ from opensteer.teams.choices import QuestionKind, DayOfWeek
 from opensteer.teams.utils import time_to_local, TIMEZONES
 
 User = get_user_model()
-# Overview | teams | staffs | questions | settings
 
 
 class Organization(BaseModel):
