@@ -1,1 +1,3 @@
-/* Project specific Javascript goes here. */
+$(function () {
+  $('select').selectpicker();
+});

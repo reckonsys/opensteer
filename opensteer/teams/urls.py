@@ -6,8 +6,8 @@ from opensteer.teams.views import OrganizationEditView, OrganizationDetailView
 paths = {
     "organizations": [
         path("new/", view=OrganizationEditView.as_view(), name="new"),
-        path("<str:pk>/edit/", view=OrganizationEditView.as_view(), name="edit"),
-        path("<str:pk>/", view=OrganizationDetailView.as_view(), name="detail"),
+        path("<str:id>/edit/", view=OrganizationEditView.as_view(), name="edit"),
+        path("<str:id>/", view=OrganizationDetailView.as_view(), name="detail"),
     ],
 }
 

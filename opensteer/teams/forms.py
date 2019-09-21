@@ -14,7 +14,7 @@ class OrganizationForm(ModelForm):
         self.helper.layout = Layout(
             'name',
             Row(
-                Field('timezone'),
+                Field('timezone', data_live_search="true"),
                 Field('standup_hour'),
                 Field('standup_minute'),
                 css_class='form-row'

@@ -8,7 +8,7 @@ from django.db.models import (
 from opensteer.core.models import BaseModel
 from opensteer.users.choices import UserRole
 from opensteer.teams.choices import QuestionKind, DayOfWeek
-from opensteer.teams.utils import time_to_local, TIMEZONES
+from opensteer.teams.utils import time_to_utc, time_to_local, TIMEZONES
 
 User = get_user_model()
 
@@ -29,13 +29,26 @@ class Organization(BaseModel):
     class Meta:
         unique_together = ['name', 'owner']
 
-    def checkin_time(self):
-        return time_to_local(
+    def local_to_utc(self):
+        '''
+        WARNING: Only call this on while saving the form.
+        Calling this method more than required will corrupt the data.
+        '''
+        self.standup_hour, self.standup_minute = time_to_utc(
+            self.standup_hour, self.standup_minute, self.timezone)
+        self.checkin_hour, self.checkin_minute = time_to_utc(
             self.checkin_hour, self.checkin_minute, self.timezone)
 
-    def standup_time(self):
-        return time_to_local(
+    def utc_to_local(self):
+        '''
+        WARNING: Never call save() after calling this. This method is only
+        intended convert the data back to local-time so that it can
+        be sent to OrganizationForm's initial data
+        '''
+        self.standup_hour, self.standup_minute = time_to_local(
             self.standup_hour, self.standup_minute, self.timezone)
+        self.checkin_hour, self.checkin_minute = time_to_local(
+            self.checkin_hour, self.checkin_minute, self.timezone)
 
 
 class Question(BaseModel):

@@ -9,30 +9,42 @@ class OrganizationEditView(View):
     form_class = OrganizationForm
     template_name = 'teams/organization_form.html'
 
-    def get(self, request, pk=None):
-        organization = None
-        if pk is not None:
-            organization = Organization.objects.get(pk=pk)
+    def get(self, request, id=None):
+        if id is None:
+            # Create organization form
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
+        # Edit organization form
+        organization = Organization.objects.get(id=id)
+        organization.utc_to_local()
         form = self.form_class(instance=organization)
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request, pk=None):
-        form = self.form_class(request.POST)
+    def post(self, request, id=None):
+        if id is None:
+            # Create Organization
+            form = self.form_class(request.POST)
+            if not form.is_valid():
+                return render(request, self.template_name, {'form': form})
+            organization = form.save(commit=False)
+            organization.local_to_utc()
+            organization.owner = request.user
+            organization.save()
+            return redirect('organizations:detail', id=organization.id)
+        # Edit Organization
+        organization = Organization.objects.get(id=id)
+        form = self.form_class(request.POST, instance=organization)
         if not form.is_valid():
             return render(request, self.template_name, {'form': form})
-        if pk is not None:
-            organization = form.save()
-            return redirect('organizations:detail', pk=organization.id)
-        organization = form.save(commit=False)
-        organization.owner = request.user
+        organization.local_to_utc()
         organization.save()
-        return redirect('organizations:detail', pk=organization.id)
+        return redirect('organizations:detail', id=organization.id)
 
 
 class OrganizationDetailView(View):
     template_name = 'teams/organization_detail.html'
 
-    def get(self, request, pk):
-        organization = Organization.objects.get(pk=pk)
+    def get(self, request, id):
+        organization = Organization.objects.get(id=id)
         return render(
             request, self.template_name, {'organization': organization})
