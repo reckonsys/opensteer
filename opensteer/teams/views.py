@@ -6,7 +6,7 @@ from opensteer.teams.forms import OrganizationForm
 from opensteer.teams.models import Organization
 
 
-class OrganizationEditView(LoginRequiredMixin, View):
+class OrganizationFormView(LoginRequiredMixin, View):
     form_class = OrganizationForm
     template_name = 'teams/organization_form.html'
 
