@@ -1,51 +1,37 @@
 {% extends 'base.html'%}
 {% block content %}
 <h1>{{organization.name}}</h1>
-<!-- <a class="btn btn-info btn-sm" href="{% url 'organizations:edit' organization.id %}" role="button">Edit</a> -->
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link {% if request.resolver_match.view_name == 'organizations:detail' %}active{% endif %}" href="#">Overview</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {% if request.resolver_match.view_name == 'teams:list' %}active{% endif %}" href="#">Teams</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {% if request.resolver_match.view_name == 'staffs:list' %}active{% endif %}" href="#">Staffs</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {% if request.resolver_match.view_name == 'questions:list' %}active{% endif %}" href="#">Questions</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {% if request.resolver_match.view_name == 'organizations:settings' %}active{% endif %}" href="#">Settings</a>
-  </li>
-</ul>
 {% block organization_content %}
+<hr />
+{{button_url}}
 {% ifequal organization.teams.count 0 %}
-<div class="jumbotron">
-  <p class="lead">
-    Let's create a team
-  </p>
-  <hr class="my-4">
-  <a class="btn btn-success" href="{% url 'organizations:new' %}" role="button">Create Team</a>
-</div>
+{% url 'teams:new' organization.id as button_url %}
+{% include "jumbotrons/base.html" with lead="Let's create a team" button_text="Create Team" button_url=button_url %}
+{% else %}
+<h2>Teams</h2>
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Team</th>
+      <th scope="col">Members</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for team in organization.teams.all %}
+    <tr>
+      <td><a class="card-link" href="{% url 'teams:detail' team.id %}" role="button">
+          {{ team.name }}</a></td>
+      <td>{{ team.members.count }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endifequal %}
 {% ifequal organization.staffs.count 0 %}
-<div class="jumbotron">
-  <p class="lead">
-    Let's invite a staff
-  </p>
-  <hr class="my-4">
-  <a class="btn btn-success" href="{% url 'organizations:new' %}" role="button">Invite Staff</a>
-</div>
+{% include "jumbotrons/base.html" with lead="Let's invite a staff" button_text="Invite Staff" button_url=button_url %}
 {% endifequal %}
 {% ifequal organization.questions.count 0 %}
-<div class="jumbotron">
-  <p class="lead">
-    Let's add a question
-  </p>
-  <hr class="my-4">
-  <a class="btn btn-success" href="{% url 'organizations:new' %}" role="button">Add Question</a>
-</div>
+{% include "jumbotrons/base.html" with lead="Let's add a qestion" button_text="Add Question" button_url=button_url %}
 {% endifequal %}
 {% endblock %}
 {% endblock %}
