@@ -25,7 +25,7 @@
     <tr>
       <td><a class="card-link" href="{% url 'teams:detail' team.id %}" role="button">
           {{ member.staff.user.username }}</a></td>
-      <td>{{ member.role}}</td>
+      <td>{{ member.get_role_display}}</td>
       <td>{{ member.staff.title }}</td>
     </tr>
     {% endfor %}

@@ -28,11 +28,51 @@
   </tbody>
 </table>
 {% endifequal %}
-{% ifequal organization.staffs.count 0 %}
-{% include "jumbotrons/base.html" with lead="Let's invite a staff" button_text="Invite Staff" button_url=button_url %}
-{% endifequal %}
 {% ifequal organization.questions.count 0 %}
 {% include "jumbotrons/base.html" with lead="Let's add a qestion" button_text="Add Question" button_url=button_url %}
+{% else %}
+<h2>Questions</h2>
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Kind</th>
+      <th scope="col">Is Active</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for question in organization.questions.all %}
+    <tr>
+      <td>{{ question.title }}</td>
+      <td>{{ question.get_kind_display }}</td>
+      <td>{{ question.is_active }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endifequal %}
+{% ifequal organization.staffs.count 0 %}
+{% include "jumbotrons/base.html" with lead="Let's invite a staff" button_text="Invite Staff" button_url=button_url %}
+{% else %}
+<h2>Staffs</h2>
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Title</th>
+      <th scope="col">Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for staff in organization.staffs.all %}
+    <tr>
+      <td>{{ staff.user.username }}</td>
+      <td>{{ staff.title }}</td>
+      <td>{{ staff.get_role_display }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endifequal %}
 {% endblock %}
 {% endblock %}
