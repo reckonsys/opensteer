@@ -37,6 +37,7 @@
     <tr>
       <th scope="col">Title</th>
       <th scope="col">Kind</th>
+      <th scope="col">Category</th>
       <th scope="col">Is Active</th>
     </tr>
   </thead>
@@ -44,6 +45,7 @@
     {% for question in organization.questions.all %}
     <tr>
       <td>{{ question.title }}</td>
+      <td>{{ question.get_category_display }}</td>
       <td>{{ question.get_kind_display }}</td>
       <td>{{ question.is_active }}</td>
     </tr>

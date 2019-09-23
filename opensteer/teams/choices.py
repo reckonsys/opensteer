@@ -12,6 +12,13 @@ class QuestionKind:
 
 
 @choices
+class QuestionCategory:
+    class Meta:
+        STANDUP = [1, 'Standup']
+        CHECKIN = [2, 'Checkin']
+
+
+@choices
 class DayOfWeek:
     class Meta:
         SUNDAY = [0, 'Sunday']

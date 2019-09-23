@@ -18,18 +18,18 @@
     <div class="mb-1">
       <nav class="navbar navbar-expand-md navbar-light bg-light">
         <a class="navbar-brand" href="{% url 'index' %}">OpenSteer</a>
+        {% if request.user.is_authenticated %}
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav mr-auto">
-            {% if request.user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
             </li>
-            {% endif %}
           </ul>
         </div>
+        {% endif %}
       </nav>
     </div>
     <div class="container">

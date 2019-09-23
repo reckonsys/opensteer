@@ -7,8 +7,8 @@ from django.db.models import (
 
 from opensteer.core.models import BaseModel
 from opensteer.users.choices import UserRole
-from opensteer.teams.choices import QuestionKind, DayOfWeek
 from opensteer.teams.utils import time_to_utc, time_to_local, TIMEZONES
+from opensteer.teams.choices import QuestionKind, DayOfWeek, QuestionCategory
 
 User = get_user_model()
 
@@ -55,9 +55,11 @@ class Question(BaseModel):
     title = CharField(max_length=200)
     is_active = BooleanField(default=True)
     options = ArrayField(CharField(max_length=100))
+    kind = PSIF(default=QuestionKind.TEXT, choices=QuestionKind.CHOICES)
     organization = ForeignKey(
         Organization, on_delete=CASCADE, related_name='questions')
-    kind = PSIF(default=QuestionKind.TEXT, choices=QuestionKind.CHOICES)
+    category = PSIF(
+        default=QuestionCategory.STANDUP, choices=QuestionCategory.CHOICES)
 
 
 class Staff(BaseModel):
