@@ -81,8 +81,7 @@ LOCAL_APPS = [
     "opensteer.users.apps.UsersConfig",
     # Your stuff: custom apps go here
     "opensteer.teams.apps.TeamsConfig",
-    "opensteer.standups.apps.StandupsConfig",
-    "opensteer.checkins.apps.CheckinsConfig",
+    "opensteer.meetings.apps.MeetingsConfig",
     "opensteer.pokers.apps.PokersConfig",
     "opensteer.contrib.apps.ContribConfig",
 ]
