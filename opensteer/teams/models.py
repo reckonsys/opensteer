@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import JSONField
 from django.db.models import (
     CharField, ForeignKey, CASCADE, PositiveSmallIntegerField as PSIF,
     BooleanField)
@@ -52,10 +52,10 @@ class Organization(BaseModel):
 
 
 class Question(BaseModel):
+    data = JSONField(default=dict)
     title = CharField(max_length=200)
     is_active = BooleanField(default=True)
     is_mandatory = BooleanField(default=True)
-    options = ArrayField(CharField(max_length=100))
     kind = PSIF(default=QuestionKind.TEXT, choices=QuestionKind.CHOICES)
     organization = ForeignKey(
         Organization, on_delete=CASCADE, related_name='questions')
