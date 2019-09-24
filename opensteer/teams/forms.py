@@ -15,14 +15,9 @@ class OrganizationForm(ModelForm):
             'name',
             Row(
                 Field('timezone', data_live_search="true"),
-                Field('standup_hour'),
-                Field('standup_minute'),
-                css_class='form-row'
-            ),
-            Row(
+                Field('meeting_hour'),
+                Field('meeting_minute'),
                 Field('checkin_day'),
-                Field('checkin_hour'),
-                Field('checkin_minute'),
                 css_class='form-row'
             ),
             Submit('submit', 'Submit')

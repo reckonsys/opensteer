@@ -1,3 +1,5 @@
+from config.settings.base import TIME_ZONE
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator
 from django.contrib.postgres.fields import JSONField
@@ -7,7 +9,8 @@ from django.db.models import (
 
 from opensteer.core.models import BaseModel
 from opensteer.users.choices import UserRole
-from opensteer.teams.utils import time_to_utc, time_to_local, TIMEZONES
+from opensteer.teams.utils import (
+    to_server_tz as _to_server_tz, to_org_tz as _to_org_tz, TIMEZONES)
 from opensteer.teams.choices import QuestionKind, DayOfWeek, QuestionCategory
 
 User = get_user_model()
@@ -15,11 +18,9 @@ User = get_user_model()
 
 class Organization(BaseModel):
     name = CharField(max_length=100)
-    timezone = CharField(max_length=32, default='UTC', choices=TIMEZONES)
-    standup_hour = PSIF(validators=[MaxValueValidator(23)])
-    standup_minute = PSIF(validators=[MaxValueValidator(59)])
-    checkin_hour = PSIF(validators=[MaxValueValidator(23)])
-    checkin_minute = PSIF(validators=[MaxValueValidator(59)])
+    meeting_hour = PSIF(validators=[MaxValueValidator(23)])
+    meeting_minute = PSIF(validators=[MaxValueValidator(59)])
+    timezone = CharField(max_length=32, default=TIME_ZONE, choices=TIMEZONES)
     checkin_day = PSIF(
         validators=[MaxValueValidator(6)],
         default=DayOfWeek.THURSDAY, choices=DayOfWeek.CHOICES)
@@ -29,26 +30,22 @@ class Organization(BaseModel):
     class Meta:
         unique_together = ['name', 'owner']
 
-    def local_to_utc(self):
+    def to_server_tz(self):
         '''
         WARNING: Only call this on while saving the form.
         Calling this method more than required will corrupt the data.
         '''
-        self.standup_hour, self.standup_minute, _ = time_to_utc(
-            self.standup_hour, self.standup_minute, self.timezone)
-        self.checkin_hour, self.checkin_minute, self.checkin_day = time_to_utc(
-            self.checkin_hour, self.checkin_minute, self.timezone, self.checkin_day)
+        self.meeting_hour, self.meeting_minute, self.checkin_day = _to_server_tz(
+            self.meeting_hour, self.meeting_minute, self.timezone, self.checkin_day)
 
-    def utc_to_local(self):
+    def to_org_tz(self):
         '''
         WARNING: Never call save() after calling this. This method is only
-        intended convert the data back to local-time so that it can
+        intended convert the data back to organization-time so that it can
         be sent to OrganizationForm's initial data
         '''
-        self.standup_hour, self.standup_minute, _ = time_to_local(
-            self.standup_hour, self.standup_minute, self.timezone)
-        self.checkin_hour, self.checkin_minute, self.checkin_day = time_to_local(
-            self.checkin_hour, self.checkin_minute, self.timezone, self.checkin_day)
+        self.meeting_hour, self.meeting_minute, self.checkin_day = _to_org_tz(
+            self.meeting_hour, self.meeting_minute, self.timezone, self.checkin_day)
 
 
 class Question(BaseModel):

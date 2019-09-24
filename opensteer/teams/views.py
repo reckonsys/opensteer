@@ -17,7 +17,7 @@ class OrganizationFormView(LoginRequiredMixin, View):
             return render(request, self.template_name, {'form': form})
         # Edit organization form
         organization = Organization.objects.get(id=organization_id)
-        organization.utc_to_local()
+        organization.to_org_tz()
         form = self.form_class(instance=organization)
         return render(request, self.template_name, {'form': form})
 
@@ -28,7 +28,7 @@ class OrganizationFormView(LoginRequiredMixin, View):
             if not form.is_valid():
                 return render(request, self.template_name, {'form': form})
             organization = form.save(commit=False)
-            organization.local_to_utc()
+            organization.to_server_tz()
             organization.owner = request.user
             organization.save()
             return redirect(
@@ -38,7 +38,7 @@ class OrganizationFormView(LoginRequiredMixin, View):
         form = self.form_class(request.POST, instance=organization)
         if not form.is_valid():
             return render(request, self.template_name, {'form': form})
-        organization.local_to_utc()
+        organization.to_server_tz()
         organization.save()
         return redirect(
             'organizations:detail', organization_id=organization.id)

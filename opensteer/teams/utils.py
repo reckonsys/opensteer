@@ -4,12 +4,12 @@ from datetime import datetime
 from arrow import Arrow
 from dateutil import tz
 
+from config.settings.base import TIME_ZONE
 from opensteer.teams.choices import DayOfWeek
 
 YEAR = 2000  # Dummy date
 MONTH = 1  # Dummy month
 DAY = 1  # Dummy Day
-UTC = 'UTC'
 TIMEZONES = [(z, z) for z in pytz.all_timezones]
 
 
@@ -24,12 +24,12 @@ At least end user sees what he wants :P
 '''
 
 
-def time_to_utc(hour, minute, timezone, day=None):
+def to_server_tz(hour, minute, timezone, day=None):
     local_time = datetime(
         YEAR, MONTH, DAY, hour=hour, minute=minute, second=0, microsecond=0,
         tzinfo=tz.gettz(timezone))
     arrow = Arrow.fromdatetime(local_time)
-    arrow = arrow.to(UTC)
+    arrow = arrow.to(TIME_ZONE)
     utc_time = arrow.datetime
     if local_time.day > utc_time.day:
         day = DayOfWeek.next(day)
@@ -38,10 +38,10 @@ def time_to_utc(hour, minute, timezone, day=None):
     return utc_time.hour, utc_time.minute, day
 
 
-def time_to_local(hour, minute, timezone, day=None):
+def to_org_tz(hour, minute, timezone, day=None):
     utc_time = datetime(
         YEAR, MONTH, DAY, hour=hour, minute=minute, second=0, microsecond=0,
-        tzinfo=tz.gettz(UTC))
+        tzinfo=tz.gettz(TIME_ZONE))
     arrow = Arrow.fromdatetime(utc_time)
     arrow = arrow.to(timezone)
     local_time = arrow.datetime
