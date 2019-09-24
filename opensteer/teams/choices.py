@@ -20,6 +20,19 @@ class QuestionCategory:
 
 @choices
 class DayOfWeek:
+
+    @classmethod
+    def next(cls, day):
+        if day == cls.SATURDAY:
+            return cls.SUNDAY
+        return day + 1
+
+    @classmethod
+    def previous(cls, day):
+        if day == cls.SUNDAY:
+            return cls.SATURDAY
+        return day - 1
+
     class Meta:
         SUNDAY = [0, 'Sunday']
         MONDAY = [1, 'Monday']

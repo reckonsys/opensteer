@@ -34,10 +34,10 @@ class Organization(BaseModel):
         WARNING: Only call this on while saving the form.
         Calling this method more than required will corrupt the data.
         '''
-        self.standup_hour, self.standup_minute = time_to_utc(
+        self.standup_hour, self.standup_minute, _ = time_to_utc(
             self.standup_hour, self.standup_minute, self.timezone)
-        self.checkin_hour, self.checkin_minute = time_to_utc(
-            self.checkin_hour, self.checkin_minute, self.timezone)
+        self.checkin_hour, self.checkin_minute, self.checkin_day = time_to_utc(
+            self.checkin_hour, self.checkin_minute, self.timezone, self.checkin_day)
 
     def utc_to_local(self):
         '''
@@ -45,10 +45,10 @@ class Organization(BaseModel):
         intended convert the data back to local-time so that it can
         be sent to OrganizationForm's initial data
         '''
-        self.standup_hour, self.standup_minute = time_to_local(
+        self.standup_hour, self.standup_minute, _ = time_to_local(
             self.standup_hour, self.standup_minute, self.timezone)
-        self.checkin_hour, self.checkin_minute = time_to_local(
-            self.checkin_hour, self.checkin_minute, self.timezone)
+        self.checkin_hour, self.checkin_minute, self.checkin_day = time_to_local(
+            self.checkin_hour, self.checkin_minute, self.timezone, self.checkin_day)
 
 
 class Question(BaseModel):
