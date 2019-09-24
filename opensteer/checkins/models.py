@@ -14,17 +14,17 @@ User = get_user_model()
 class Checkin(BaseModel):
     is_active = BooleanField(default=True)
     year = PSIF(validators=[MaxValueValidator(2047)])
-    week_of_year = PSIF(validators=[MaxValueValidator(52)])
+    week = PSIF(validators=[MaxValueValidator(53)])
     team = ForeignKey(Team, on_delete=CASCADE, related_name='checkins')
 
     class Meta:
-        unique_together = ['team', 'year', 'week_of_year']
+        unique_together = ['team', 'year', 'week']
 
     @property
     def last_checkin(self):
         return Checkin.objects.filter(
             is_active=False, team=self.team).order_by(
-                'year', 'week_of_year', 'created_at').first()
+                'year', 'week', 'created_at').first()
 
 
 class CheckinResponse(BaseModel):

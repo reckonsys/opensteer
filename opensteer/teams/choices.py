@@ -22,22 +22,30 @@ class QuestionCategory:
 class DayOfWeek:
 
     @classmethod
+    def edge_days(cls):
+        first_day, _ = cls.CHOICES[0]
+        last_day, _ = cls.CHOICES[-1]
+        return first_day, last_day
+
+    @classmethod
     def next(cls, day):
-        if day == cls.SATURDAY:
-            return cls.SUNDAY
+        first_day, last_day = cls.edge_days()
+        if day == last_day:
+            return first_day
         return day + 1
 
     @classmethod
     def previous(cls, day):
-        if day == cls.SUNDAY:
-            return cls.SATURDAY
+        first_day, last_day = cls.edge_days()
+        if day == first_day:
+            return last_day
         return day - 1
 
     class Meta:
-        SUNDAY = [0, 'Sunday']
-        MONDAY = [1, 'Monday']
-        TUESDAY = [2, 'Tuesday']
-        WEDNESDAY = [3, 'Wednesday']
-        THURSDAY = [4, 'Thursday']
-        FRIDAY = [5, 'Friday']
-        SATURDAY = [6, 'Saturday']
+        MONDAY = [0, 'Monday']
+        TUESDAY = [1, 'Tuesday']
+        WEDNESDAY = [2, 'Wednesday']
+        THURSDAY = [3, 'Thursday']
+        FRIDAY = [4, 'Friday']
+        SATURDAY = [5, 'Saturday']
+        SUNDAY = [6, 'Sunday']
