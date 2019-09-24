@@ -20,24 +20,21 @@ class Checkin(BaseModel):
     class Meta:
         unique_together = ['team', 'year', 'week_of_year']
 
-
-class CheckinQuestion(BaseModel):
-    is_mandatory = BooleanField(default=True)
-    team = ForeignKey(
-        Team, on_delete=CASCADE, related_name='checkin_questions')
-    question = ForeignKey(
-        Question, on_delete=CASCADE, related_name='checkin_questions')
-
-    class Meta:
-        unique_together = ['team', 'question']
+    @property
+    def last_checkin(self):
+        return Checkin.objects.filter(
+            is_active=False, team=self.team).order_by(
+                'year', 'week_of_year', 'created_at').first()
 
 
 class CheckinResponse(BaseModel):
     text = CharField(max_length=500)
+    checkin = ForeignKey(
+        Checkin, on_delete=CASCADE, related_name='checkin_responses')
     member = ForeignKey(
         Member, on_delete=CASCADE, related_name='checkin_responses')
     question = ForeignKey(
         Question, on_delete=CASCADE, related_name='checkin_responses')
 
     class Meta:
-        unique_together = ['member', 'question']
+        unique_together = ['question', 'member', 'checkin']

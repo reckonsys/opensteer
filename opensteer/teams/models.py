@@ -54,12 +54,16 @@ class Organization(BaseModel):
 class Question(BaseModel):
     title = CharField(max_length=200)
     is_active = BooleanField(default=True)
+    is_mandatory = BooleanField(default=True)
     options = ArrayField(CharField(max_length=100))
     kind = PSIF(default=QuestionKind.TEXT, choices=QuestionKind.CHOICES)
     organization = ForeignKey(
         Organization, on_delete=CASCADE, related_name='questions')
     category = PSIF(
         default=QuestionCategory.STANDUP, choices=QuestionCategory.CHOICES)
+
+    class Meta:
+        unique_together = ['title', 'organization']
 
 
 class Staff(BaseModel):

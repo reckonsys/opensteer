@@ -18,24 +18,21 @@ class Standup(BaseModel):
     class Meta:
         unique_together = ['team', 'date']
 
-
-class StandupQuestion(BaseModel):
-    is_mandatory = BooleanField(default=True)
-    team = ForeignKey(
-        Team, on_delete=CASCADE, related_name='standup_questions')
-    question = ForeignKey(
-        Question, on_delete=CASCADE, related_name='standup_questions')
-
-    class Meta:
-        unique_together = ['team', 'question']
+    @property
+    def last_standup(self):
+        return Standup.objects.filter(
+            is_active=False, team=self.team).order_by(
+                'date', 'created_at').first()
 
 
 class StandupResponse (BaseModel):
     text = CharField(max_length=500)
+    standup = ForeignKey(
+        Standup, on_delete=CASCADE, related_name='standup_responses')
     member = ForeignKey(
         Member, on_delete=CASCADE, related_name='standup_responses')
     question = ForeignKey(
         Question, on_delete=CASCADE, related_name='standup_responses')
 
     class Meta:
-        unique_together = ['member', 'question']
+        unique_together = ['question', 'member', 'standup']

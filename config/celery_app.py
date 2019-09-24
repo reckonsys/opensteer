@@ -6,6 +6,11 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
 app = Celery("opensteer")
 
+# @app.on_after_configure.connect
+# def setup_periodic_tasks(sender, **kwargs):
+# every 60 seconds
+# print('ASDKJHASLKJDHAKJLSDHKALJSDHLKAJSD')
+# sender.add_periodic_task(1.0, 'opensteer.contrib.tasks.create_meetings')
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
 # - namespace='CELERY' means all celery-related configuration keys
