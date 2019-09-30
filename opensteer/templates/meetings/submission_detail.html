@@ -12,6 +12,15 @@
   </div>
 </form>
 {% else %}
-CLOSE
+{% for response in submission.responses.all %}
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ response.question.title }}</h5>
+    <p class="card-text">
+      {{ response.text }}
+    </p>
+  </div>
+</div>
+{% endfor %}
 {% endif %}
 {% endblock %}
