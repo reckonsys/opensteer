@@ -1,20 +1,34 @@
 from datetime import date
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models import (
     CharField, ForeignKey, CASCADE, BooleanField, DateField,
-    PositiveSmallIntegerField as PSIF)
+    PositiveSmallIntegerField as PSIF, UUIDField)
 
 from opensteer.core.models import BaseModel
+from opensteer.teams.choices import QuestionCategory
+from opensteer.meetings.choices import SubmissionStatus
 from opensteer.teams.models import Team, Question, Member
 
 User = get_user_model()
 # Overview | teams | staffs | questions | settings
 
 
-class Standup(BaseModel):
-    date = DateField(default=date.today)
+class Meeting(BaseModel):
     is_active = BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+    def deactivate(self):
+        self.is_active = False
+        return self.save()
+
+
+class Standup(Meeting):
+    date = DateField(default=date.today)
     team = ForeignKey(Team, on_delete=CASCADE, related_name='standups')
 
     class Meta:
@@ -27,10 +41,9 @@ class Standup(BaseModel):
                 'date', 'created_at').first()
 
 
-class Checkin(BaseModel):
-    is_active = BooleanField(default=True)
-    year = PSIF(validators=[MaxValueValidator(2047)])
+class Checkin(Meeting):
     week = PSIF(validators=[MaxValueValidator(53)])
+    year = PSIF(validators=[MaxValueValidator(2047)])
     team = ForeignKey(Team, on_delete=CASCADE, related_name='checkins')
 
     class Meta:
@@ -43,26 +56,43 @@ class Checkin(BaseModel):
                 'year', 'week', 'created_at').first()
 
 
+class Submission(BaseModel):
+    meeting_id = UUIDField()
+    meeting_type = ForeignKey(ContentType, on_delete=CASCADE)
+    meeting_object = GenericForeignKey('meeting_type', 'meeting_id')
+    member = ForeignKey(Member, on_delete=CASCADE, related_name='submissions')
+    status = PSIF(
+        choices=SubmissionStatus.CHOICES, default=SubmissionStatus.OPEN)
+
+    class Meta:
+        unique_together = ['member', 'meeting_type', 'meeting_id']
+
+    def is_open(self):
+        return self.status == SubmissionStatus.OPEN
+
+    def get_question_category(self):
+        print(self.meeting_type.name)
+        if self.meeting_type.name == 'standup':
+            return QuestionCategory.STANDUP
+        elif self.meeting_type.name == 'checkin':
+            return QuestionCategory.CHECKIN
+        raise NotImplementedError('Unknown meeeting type!')
+
+    def get_questions(self):
+        return Question.objects.filter(
+            category=self.get_question_category(),
+            organization=self.member.team.organization,
+        )
+
+    def close(self):
+        self.status = SubmissionStatus.CLOSED
+        self.save()
+
+
 class Response(BaseModel):
     text = CharField(max_length=500)
-    member = ForeignKey(Member, on_delete=CASCADE)
-    question = ForeignKey(Question, on_delete=CASCADE)
+    question = ForeignKey(Question, on_delete=CASCADE, related_name='responses')
+    submission = ForeignKey(Submission, on_delete=CASCADE, related_name='responses')
 
     class Meta:
-        abstract = True
-
-
-class StandupResponse(Response):
-    standup = ForeignKey(
-        Standup, on_delete=CASCADE, related_name='standup_responses')
-
-    class Meta:
-        unique_together = ['question', 'member', 'standup']
-
-
-class CheckinResponse(Response):
-    checkin = ForeignKey(
-        Checkin, on_delete=CASCADE, related_name='checkin_responses')
-
-    class Meta:
-        unique_together = ['question', 'member', 'checkin']
+        unique_together = ['question', 'submission']

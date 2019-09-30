@@ -1,3 +1,26 @@
+{% if submissions %}
+<h1>Active Meetings</h1>
+{{ submission.id }}
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Type</th>
+      <th scope="col">Team</th>
+      <th scope="col">Organization</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for submission in submissions %}
+    <tr>
+      <td><a class="card-link" href="{% url 'submissions:detail' submission.id %}" role="button">
+          {{ submission.meeting_type.name }}</a></td>
+      <td>{{ submission.member.team.name }}</td>
+      <td>{{ submission.member.team.organization.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 {% if organizations %}
 <h1>Organizations</h1>
 <table class="table table-borderless table-hover">
@@ -10,7 +33,7 @@
     </tr>
   </thead>
   <tbody>
-  {% for organization in organizations %}
+    {% for organization in organizations %}
     <tr>
       <td><a class="card-link" href="{% url 'organizations:detail' organization.id %}" role="button">
           {{ organization.name }}</a></td>
@@ -18,7 +41,7 @@
       <td>{{ organization.staffs.count }}</td>
       <td>{{ organization.questions.count }}</td>
     </tr>
-  {% endfor %}
+    {% endfor %}
   </tbody>
 </table>
 {% else %}

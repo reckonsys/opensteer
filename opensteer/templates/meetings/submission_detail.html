@@ -1,0 +1,17 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1>{{ submission.id }}</h1>
+<h1>{{ submission.meeting_type.name }}</h1>
+{% if submission.is_open %}
+<form method="post">
+  {{ form|crispy }}
+  {% csrf_token %}
+  <div class="form-group">
+    <input type="submit" value="Submit">
+  </div>
+</form>
+{% else %}
+CLOSE
+{% endif %}
+{% endblock %}

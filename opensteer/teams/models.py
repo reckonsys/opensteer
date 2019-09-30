@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator
 from django.contrib.postgres.fields import JSONField
 from django.db.models import (
     CharField, ForeignKey, CASCADE, PositiveSmallIntegerField as PSIF,
-    BooleanField)
+    BooleanField, ManyToManyField)
 
 from opensteer.core.models import BaseModel
 from opensteer.users.choices import UserRole
@@ -49,7 +49,7 @@ class Organization(BaseModel):
 
 
 class Question(BaseModel):
-    data = JSONField(default=dict)
+    data = JSONField(default=dict, blank=True)
     title = CharField(max_length=200)
     is_active = BooleanField(default=True)
     is_mandatory = BooleanField(default=True)
@@ -76,6 +76,7 @@ class Staff(BaseModel):
 
 class Team(BaseModel):
     name = CharField(max_length=100)
+    staffs = ManyToManyField(Staff, through='Member')
     organization = ForeignKey(
         Organization, on_delete=CASCADE, related_name='teams')
 

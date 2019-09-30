@@ -13,7 +13,7 @@ logger = get_task_logger(__name__)
 
 
 def _create_standup(team, date):
-    if not team.standups.filter(date=date).exists():
+    if team.standups.filter(date=date).exists():
         return
     # We don't have any standups, yet! so lets create one.
     # First, deactivate all old standups
@@ -28,7 +28,7 @@ def _create_standup(team, date):
 
 
 def _create_checkin(team, year, week):
-    if not team.checkins.filter(year=year, week=week).exists():
+    if team.checkins.filter(year=year, week=week).exists():
         return
     # We don't have any Checkins, yet! so lets create one.
     # First, deactivate all old checkins
