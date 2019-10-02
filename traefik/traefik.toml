@@ -1,0 +1,47 @@
+logLevel = "INFO"
+defaultEntryPoints = ["https", "http"]
+
+[retry]
+
+[docker]
+exposedByDefault = false
+
+
+[Global]
+debug = true
+
+[log]
+level = "DEBUG"
+
+[accessLog]
+# format = "json"
+
+[api]
+entryPoint = "traefik"
+dashboard = true
+
+[ping]
+
+# Entrypoints, http and https
+[entryPoints]
+  # http should be redirected to https
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  # https is the default
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+
+[acme]
+email = "dhilip@reckonsys.com"
+storage = "/etc/traefik/acme/acme.json"
+entryPoint = "https"
+acmeLogging = true
+onHostRule = true
+# caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+# Default: "https://acme-v02.api.letsencrypt.org/directory"
+
+  [acme.dnsChallenge]
+  provider = "digitalocean"

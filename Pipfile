@@ -10,6 +10,7 @@ ipdb = "*"
 flake8 = "*"
 pep8 = "*"
 pygraphviz = "*"
+mypy = "*"
 
 [packages]
 pytz = "==2019.2"

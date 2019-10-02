@@ -1,0 +1,61 @@
+version: '3'
+
+volumes:
+  traefik_acme: {}
+  rabbitmq_data: {}
+  postgres_data: {}
+
+services:
+
+  rabbitmq:
+    env_file: .env
+    restart: always
+    image: rabbitmq:latest
+    ports:
+      - 5672
+    volumes:
+      - rabbitmq_data:/data
+
+  postgres:
+    env_file: .env
+    restart: always
+    image: postgres:latest
+    ports:
+      - 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  worker: &worker
+    env_file: .env
+    restart: always
+    build: .
+    command: celery -A config.celery_app beat -l info
+    links:
+      - rabbitmq:rabbitmq
+      - postgres:postgres
+
+  backend:
+    <<: *worker
+    command: gunicorn config.wsgi:application -b :${BACKEND_PORT}
+    expose:
+      - ${BACKEND_PORT}
+    labels:
+      - traefik.enable=true
+      - traefik.backend.domain=${BACKEND_DOMAIN}
+      - traefik.frontend.rule=Host:${BACKEND_DOMAIN}
+      - traefik.http.middlewares.testHeader.Headers.AddVaryHeader=true
+      - traefik.http.middlewares.testHeader.Headers.AccessControlMaxAge=100
+      - traefik.http.middlewares.testHeader.Headers.AccessControlAllowMethods=GET,OPTIONS,PUT,POST,DELETE,PATCH
+      - traefik.http.middlewares.testHeader.Headers.AccessControlAllowOrigin=*.${BACKEND_DOMAIN},${BACKEND_DOMAIN}
+
+  traefik:
+    env_file: .env
+    build: traefik
+    depends_on:
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik_acme:/etc/traefik/acme/ # Defined in traefik/traefik.toml
+    ports:
+      - 0.0.0.0:80:80
+      - 0.0.0.0:443:443
