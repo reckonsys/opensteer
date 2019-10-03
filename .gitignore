@@ -286,3 +286,4 @@ opensteer/media/
 .pytest_cache/
 
 
+.env-prod

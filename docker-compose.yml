@@ -8,7 +8,7 @@ volumes:
 services:
 
   rabbitmq:
-    env_file: .env
+    env_file: .env-prod
     restart: always
     image: rabbitmq:latest
     ports:
@@ -17,7 +17,7 @@ services:
       - rabbitmq_data:/data
 
   postgres:
-    env_file: .env
+    env_file: .env-prod
     restart: always
     image: postgres:latest
     ports:
@@ -26,7 +26,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
 
   worker: &worker
-    env_file: .env
+    env_file: .env-prod
     restart: always
     build: .
     command: celery -A config.celery_app beat -l info
@@ -49,7 +49,7 @@ services:
       - traefik.http.middlewares.testHeader.Headers.AccessControlAllowOrigin=*.${BACKEND_DOMAIN},${BACKEND_DOMAIN}
 
   traefik:
-    env_file: .env
+    env_file: .env-prod
     build: traefik
     depends_on:
       - backend
