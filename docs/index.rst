@@ -38,10 +38,10 @@ list regions::
 
 Create Machine::
 
-    docker-machine create
-        --driver digitalocean
-        --digitalocean-access-token TOKEN
-        --digitalocean-image NAME
-        --digitalocean-size SIZE
+    docker-machine create \
+        --driver digitalocean \
+        --digitalocean-access-token TOKEN \
+        --digitalocean-image NAME \
+        --digitalocean-size SIZE \
         --digitalocean-region REGION
 
