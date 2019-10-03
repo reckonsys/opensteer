@@ -33,13 +33,15 @@ list sizes:
 ``doctl compute size  list``
 
 list regions:
-    ``doctl compute region list``
+
+``doctl compute region list``
 
 Create Machine:
 
 ``docker-machine create \
-    --driver digitalocean \
-    --digitalocean-access-token TOKEN \
-    --digitalocean-image NAME \
-    --digitalocean-size SIZE \
-    --digitalocean-region REGION``
+--driver digitalocean \
+--digitalocean-access-token TOKEN \
+--digitalocean-image NAME \
+--digitalocean-size SIZE \
+--digitalocean-region REGION``
+
