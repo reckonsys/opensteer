@@ -41,7 +41,8 @@ Create Machine::
     docker-machine create \
         --driver digitalocean \
         --digitalocean-access-token TOKEN \
-        --digitalocean-image NAME \
+        --digitalocean-image IMAGE_NAME \
         --digitalocean-size SIZE \
-        --digitalocean-region REGION
+        --digitalocean-region REGION \
+        MACHINE_NAME
 
