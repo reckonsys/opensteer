@@ -36,12 +36,12 @@ list regions:
 
 ``doctl compute region list``
 
-Create Machine:
+Create Machine::
 
-``docker-machine create \
---driver digitalocean \
---digitalocean-access-token TOKEN \
---digitalocean-image NAME \
---digitalocean-size SIZE \
---digitalocean-region REGION``
+    docker-machine create
+        --driver digitalocean
+        --digitalocean-access-token TOKEN
+        --digitalocean-image NAME
+        --digitalocean-size SIZE
+        --digitalocean-region REGION
 
