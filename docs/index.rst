@@ -18,3 +18,28 @@ Indices & Tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Digital Ocean
+=============
+
+https://docs.docker.com/machine/drivers/digital-ocean/
+
+list images:
+
+``doctl compute image list-distribution``
+
+list sizes:
+
+``doctl compute size  list``
+
+list regions:
+    ``doctl compute region list``
+
+Create Machine:
+
+``docker-machine create \
+    --driver digitalocean \
+    --digitalocean-access-token TOKEN \
+    --digitalocean-image NAME \
+    --digitalocean-size SIZE \
+    --digitalocean-region REGION``
