@@ -24,17 +24,17 @@ Digital Ocean
 
 https://docs.docker.com/machine/drivers/digital-ocean/
 
-list images:
+list images::
 
-``doctl compute image list-distribution``
+    doctl compute image list-distribution
 
-list sizes:
+list sizes::
 
-``doctl compute size  list``
+    doctl compute size  list
 
-list regions:
+list regions::
 
-``doctl compute region list``
+    doctl compute region list
 
 Create Machine::
 
