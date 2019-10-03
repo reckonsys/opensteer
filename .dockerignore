@@ -1,0 +1,6 @@
+.git
+.venv
+media
+upload
+node_modules
+dist

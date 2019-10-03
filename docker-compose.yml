@@ -29,10 +29,14 @@ services:
     env_file: .env-prod
     restart: always
     build: .
-    command: celery -A config.celery_app beat -l info
+    command: celery -A config.celery_app worker -l debug
     links:
       - rabbitmq:rabbitmq
       - postgres:postgres
+
+  beat:
+    <<: *worker
+    command: celery -A config.celery_app beat -l debug
 
   backend:
     <<: *worker
