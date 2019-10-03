@@ -47,6 +47,9 @@ class Organization(BaseModel):
         self.meeting_hour, self.meeting_minute, self.checkin_day = _to_org_tz(
             self.meeting_hour, self.meeting_minute, self.timezone, self.checkin_day)
 
+    def __str__(self):
+        return self.name
+
 
 class Question(BaseModel):
     data = JSONField(default=dict, blank=True)
@@ -62,6 +65,9 @@ class Question(BaseModel):
     class Meta:
         unique_together = ['title', 'organization']
 
+    def __str__(self):
+        return self.title
+
 
 class Staff(BaseModel):
     title = CharField(max_length=100)
@@ -73,6 +79,9 @@ class Staff(BaseModel):
     class Meta:
         unique_together = ['user', 'organization']
 
+    def __str__(self):
+        return f'u({self.user}) t({self.title})'
+
 
 class Team(BaseModel):
     name = CharField(max_length=100)
@@ -83,6 +92,9 @@ class Team(BaseModel):
     class Meta:
         unique_together = ['name', 'organization']
 
+    def __str__(self):
+        return self.name
+
 
 class Member(BaseModel):
     role = PSIF(default=UserRole.REGULAR, choices=UserRole.CHOICES)
@@ -91,3 +103,6 @@ class Member(BaseModel):
 
     class Meta:
         unique_together = ['team', 'staff']
+
+    def __str__(self):
+        return f'r({self.role}) t({self.team}) s({self.staff})'
