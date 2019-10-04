@@ -6,3 +6,4 @@ class SubmissionStatus:
     class Meta:
         OPEN = [1, 'Open']
         CLOSED = [2, 'Closed']
+        SUBMITTED = [2, 'Submitted']

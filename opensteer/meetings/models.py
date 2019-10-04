@@ -88,6 +88,10 @@ class Submission(BaseModel):
         self.status = SubmissionStatus.CLOSED
         self.save()
 
+    def submit(self):
+        self.status = SubmissionStatus.CLOSED
+        self.save()
+
 
 class Response(BaseModel):
     text = CharField(max_length=500)

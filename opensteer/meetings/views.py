@@ -26,8 +26,9 @@ class SubmissionsView(View):
                 request, self.template_name, {
                     'submission': submission, 'form': form})
         for question_id, text in form.cleaned_data.items():
-            Response.objects.create(submission_id=submission_id, question_id=question_id, text=text)
-        submission.close()
+            Response.objects.create(
+                submission_id=submission_id, question_id=question_id, text=text)
+        submission.submit()
         return render(
             request, self.template_name, {
                 'submission': submission, 'form': form})
