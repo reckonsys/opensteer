@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.shortcuts import render
 
-from opensteer.teams.models import Organization
+# from opensteer.teams.models import Organization
 from opensteer.meetings.models import Submission
 from opensteer.meetings.choices import SubmissionStatus
 

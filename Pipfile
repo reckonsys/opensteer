@@ -38,6 +38,7 @@ django-debug-toolbar = "*"
 django-extensions = "*"
 orm-choices = "*"
 arrow = "*"
+django-tenant-schemas = "*"
 
 [requires]
 python_version = "3.7"

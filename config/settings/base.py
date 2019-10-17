@@ -43,10 +43,9 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'tenant_schemas.postgresql_backend',
         'NAME': env('POSTGRES_DB', default='opensteer'),
         'USER': env('POSTGRES_USER', default='opensteer'),
         'PASSWORD': env('POSTGRES_PASSWORD', default='opensteer'),
@@ -55,6 +54,14 @@ DATABASES = {
         'ATOMIC_REQUESTS': True,
     }
 }
+
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
+
+TENANT_MODEL = "opensteer.Company"
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -65,7 +72,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # APPS
 # ------------------------------------------------------------------------------
-DJANGO_APPS = [
+
+SHARED_APPS = [
+    'tenant_schemas',
+    "opensteer.core.apps.CoreConfig",
+
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -74,8 +85,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
-]
-THIRD_PARTY_APPS = [
+
     "crispy_forms",
     "allauth",
     "allauth.account",
@@ -83,8 +93,9 @@ THIRD_PARTY_APPS = [
     "django_celery_beat",
 ]
 
-LOCAL_APPS = [
-    "opensteer.core.apps.CoreConfig",
+TENANT_APPS = [
+    # 'django.contrib.contenttypes',  # Tenant schemas require this, I guess
+
     "opensteer.users.apps.UsersConfig",
     # Your stuff: custom apps go here
     "opensteer.teams.apps.TeamsConfig",
@@ -93,7 +104,7 @@ LOCAL_APPS = [
     "opensteer.contrib.apps.ContribConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = SHARED_APPS + TENANT_APPS
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -138,6 +149,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    "tenant_schemas.middleware.TenantMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -178,6 +190,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         "DIRS": [str(APPS_DIR.path("templates"))],
+        # 'APP_DIRS': True,
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types

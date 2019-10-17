@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3e53e64bedc7ed09dcfa2397b5a255e83eee308b756b69b77842fc64cd0f7a4a"
+            "sha256": "9c98edaabbb52c7c23851dcf83e2113e0c01054a384e5cb223a81be04686a2cd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -245,6 +245,13 @@
             ],
             "index": "pypi",
             "version": "==1.7.2"
+        },
+        "django-tenant-schemas": {
+            "hashes": [
+                "sha256:7d3f96f6e1969ade79b22a7600553fa8843c8aff77dbbad8f1e1e7523b9a0cd3"
+            ],
+            "index": "pypi",
+            "version": "==1.9.0"
         },
         "django-timezone-field": {
             "hashes": [

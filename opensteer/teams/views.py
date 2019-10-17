@@ -2,7 +2,8 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from opensteer.teams.models import Organization, Team
+# from opensteer.teams.models import Organization, Team
+from opensteer.teams.models import Team
 from opensteer.teams.forms import OrganizationForm, TeamForm
 
 
@@ -17,7 +18,7 @@ class OrganizationFormView(LoginRequiredMixin, View):
             return render(request, self.template_name, {'form': form})
         # Edit organization form
         organization = Organization.objects.get(id=organization_id)
-        organization.to_org_tz()
+        organization.to_company_tz()
         form = self.form_class(instance=organization)
         return render(request, self.template_name, {'form': form})
 

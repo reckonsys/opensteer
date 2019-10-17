@@ -3,7 +3,8 @@ from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Submit, Field
 
-from opensteer.teams.models import Organization, Team
+# from opensteer.teams.models import Organization, Team
+from opensteer.teams.models import Team
 
 
 class OrganizationForm(ModelForm):
@@ -24,7 +25,7 @@ class OrganizationForm(ModelForm):
         )
 
     class Meta:
-        model = Organization
+        # model = Organization
         exclude = ['owner']
 
 
