@@ -5,7 +5,7 @@ Base settings to build other settings files upon.
 import environ
 
 ROOT_DIR = (
-    environ.Path(__file__) - 3
+    environ.Path(__file__) - 2
 )  # (opensteer/config/settings/base.py - 3 = opensteer/)
 APPS_DIR = ROOT_DIR.path("opensteer")
 
@@ -24,7 +24,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
 # In Windows, this must be set to your system time zone.
-TIME_ZONE = "UTC"
+TIME_ZONE = env.str("TIME_ZONE", "UTC")
 # TIME_ZONE = "Asia/Kolkata"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-in"
@@ -37,6 +37,16 @@ USE_L10N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
+
+# Stanup / Checkin time
+MEETING_HOUR = env.int('MEETING_HOUR', 0)  # 0 - 23
+MEETING_MINUTE = env.int('MEETING_MINUTE', 0)  # 0 - 59
+# 0 - Monday; 1 - Tuesday; ... ; 5 - Saturday; 6 - Sunday
+# Check
+CHECKIN_DAY = env.int('CHECKIN_DAY', 3)  # 0 - 6
+
+COMPANY_NAME = env.str('COMPANY_NAME', 'OpenSteer')
+
 LOCALE_PATHS = [ROOT_DIR.path("locale")]
 
 # DATABASES
@@ -45,7 +55,7 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 
 DATABASES = {
     'default': {
-        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': env('POSTGRES_DB', default='opensteer'),
         'USER': env('POSTGRES_USER', default='opensteer'),
         'PASSWORD': env('POSTGRES_PASSWORD', default='opensteer'),
@@ -54,13 +64,6 @@ DATABASES = {
         'ATOMIC_REQUESTS': True,
     }
 }
-
-DATABASE_ROUTERS = (
-    'tenant_schemas.routers.TenantSyncRouter',
-)
-
-TENANT_MODEL = "opensteer.Company"
-DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 
 
 # URLS
@@ -73,10 +76,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # APPS
 # ------------------------------------------------------------------------------
 
-SHARED_APPS = [
-    'tenant_schemas',
-    "opensteer.core.apps.CoreConfig",
-
+INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -87,24 +87,21 @@ SHARED_APPS = [
     "django.contrib.admin",
 
     "crispy_forms",
+    "django_celery_beat",
+
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "django_celery_beat",
-]
 
-TENANT_APPS = [
-    # 'django.contrib.contenttypes',  # Tenant schemas require this, I guess
-
-    "opensteer.users.apps.UsersConfig",
     # Your stuff: custom apps go here
-    "opensteer.teams.apps.TeamsConfig",
-    "opensteer.meetings.apps.MeetingsConfig",
-    "opensteer.pokers.apps.PokersConfig",
-    "opensteer.contrib.apps.ContribConfig",
+    "opensteer.core",
+    "opensteer.users",
+
+    "opensteer.teams",
+    "opensteer.meetings",
+    "opensteer.pokers",
+    "opensteer.contrib",
 ]
-# https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = SHARED_APPS + TENANT_APPS
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -149,7 +146,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
-    "tenant_schemas.middleware.TenantMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -280,7 +276,7 @@ LOGGING = {
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-timezone
 CELERY_TIMEZONE = TIME_ZONE
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", default='amqp://guest@localhost//')
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default='pyamqp://guest@localhost//')
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
 CELERY_ACCEPT_CONTENT = ["json"]
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
@@ -311,3 +307,5 @@ GRAPH_MODELS = {
   # 'all_applications': True,
   'group_models': True,
 }
+
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="foobar")

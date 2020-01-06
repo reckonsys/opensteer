@@ -1,17 +1,11 @@
 from django.urls import include, path
 
-from opensteer.teams.views import (
-    OrganizationFormView, OrganizationDetailView, TeamFormView, TeamDetailView)
+from opensteer.teams.views import TeamFormView, TeamDetailView
 
 
 paths = {
-    "organizations": [
-        path("new/", view=OrganizationFormView.as_view(), name="new"),
-        path("<str:organization_id>/edit/", view=OrganizationFormView.as_view(), name="edit"),
-        path("<str:organization_id>/", view=OrganizationDetailView.as_view(), name="detail"),
-    ],
     "teams": [
-        path("new/<str:organization_id>/", view=TeamFormView.as_view(), name="new"),
+        path("new/", view=TeamFormView.as_view(), name="new"),
         path("<str:team_id>/edit/", view=TeamFormView.as_view(), name="edit"),
         path("<str:team_id>/", view=TeamDetailView.as_view(), name="detail"),
     ],

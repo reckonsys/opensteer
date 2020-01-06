@@ -25,6 +25,18 @@
               <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="#">{% trans "Submissions" %}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">{% trans "Questions" %}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">{% trans "Team" %}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">{% trans "Users" %}</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
             </li>
           </ul>

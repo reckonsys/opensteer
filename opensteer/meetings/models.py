@@ -7,13 +7,12 @@ from django.db.models import (
     CharField, ForeignKey, CASCADE, BooleanField, DateField,
     PositiveSmallIntegerField as PSIF, UUIDField)
 
-from opensteer.core.models import BaseModel
-from opensteer.teams.choices import QuestionCategory
+from opensteer.core.choices import QuestionCategory
+from opensteer.core.models import BaseModel, Question
 from opensteer.meetings.choices import SubmissionStatus
-from opensteer.teams.models import Team, Question, Member
+from opensteer.teams.models import Team, Member
 
 User = get_user_model()
-# Overview | teams | staffs | questions | settings
 
 
 class Meeting(BaseModel):
@@ -25,6 +24,23 @@ class Meeting(BaseModel):
     def deactivate(self):
         self.is_active = False
         return self.save()
+
+    @property
+    def timestamp(self):
+        return self.created_at
+
+    @classmethod
+    def create_meetings(cls, **kwargs):
+        if cls.objects.filter(**kwargs).exists():
+            return
+        # We don't have any meetings, yet! so lets create one.
+        # First, deactivate all old old
+        # TODO: Send emails to Admins & managers stating stale Meetings
+        # Stale Meetings: The ones that have SubmissionStatus as OPEN
+        cls.objects.filter(is_active=True).update(is_active=False)
+        return [
+            cls.objects.create(team=team, **kwargs)
+            for team in Team.objects.all()]
 
 
 class Standup(Meeting):
@@ -39,6 +55,10 @@ class Standup(Meeting):
         return Standup.objects.filter(
             is_active=False, team=self.team).order_by(
                 'date', 'created_at').first()
+
+    @property
+    def timestamp(self):
+        return self.date
 
 
 class Checkin(Meeting):
@@ -55,11 +75,15 @@ class Checkin(Meeting):
             is_active=False, team=self.team).order_by(
                 'year', 'week', 'created_at').first()
 
+    @property
+    def timestamp(self):
+        return f'Week {self.week} of year {self.year}'
+
 
 class Submission(BaseModel):
     meeting_id = UUIDField()
     meeting_type = ForeignKey(ContentType, on_delete=CASCADE)
-    meeting_object = GenericForeignKey('meeting_type', 'meeting_id')
+    meeting = GenericForeignKey('meeting_type', 'meeting_id')
     member = ForeignKey(Member, on_delete=CASCADE, related_name='submissions')
     status = PSIF(
         choices=SubmissionStatus.CHOICES, default=SubmissionStatus.OPEN)
@@ -71,7 +95,6 @@ class Submission(BaseModel):
         return self.status == SubmissionStatus.OPEN
 
     def get_question_category(self):
-        print(self.meeting_type.name)
         if self.meeting_type.name == 'standup':
             return QuestionCategory.STANDUP
         elif self.meeting_type.name == 'checkin':
@@ -79,17 +102,14 @@ class Submission(BaseModel):
         raise NotImplementedError('Unknown meeeting type!')
 
     def get_questions(self):
-        return Question.objects.filter(
-            category=self.get_question_category(),
-            organization=self.member.team.organization,
-        )
+        return Question.objects.filter(category=self.get_question_category())
 
     def close(self):
         self.status = SubmissionStatus.CLOSED
         self.save()
 
     def submit(self):
-        self.status = SubmissionStatus.CLOSED
+        self.status = SubmissionStatus.SUBMITTED
         self.save()
 
 

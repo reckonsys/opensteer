@@ -5,14 +5,13 @@ from opensteer.meetings.models import Standup, Checkin, Submission
 
 
 def member_updated(sender, instance, created, **kwargs):
-    # standups = Standup.objects.filter()
     if not created:
         return
     member = instance
     for standup in Standup.objects.filter(team=member.team, is_active=True):
-        member.submissions.create(meeting_object=standup)
+        member.submissions.create(meeting=standup)
     for checkin in Checkin.objects.filter(team=member.team, is_active=True):
-        member.submissions.create(meeting_object=checkin)
+        member.submissions.create(meeting=checkin)
     print('create_submission', sender, member, created)
 
 
@@ -20,19 +19,18 @@ def meeting_updated(sender, instance, created, **kwargs):
     if not created:
         return
     for member in instance.team.members.all():
-        member.submissions.create(meeting_object=instance)
+        member.submissions.create(meeting=instance)
 
 
 def submission_updated(sender, instance, created, **kwargs):
     if created:
         return
-    meeting_object = instance.meeting_object
-    print(instance, meeting_object)
-    if Submission.objects.filter(meeting_id=meeting_object.id, status=SubmissionStatus.OPEN).exists():
+    meeting = instance.meeting
+    if Submission.objects.filter(meeting_id=meeting.id, status=SubmissionStatus.OPEN).exists():
         # Some submissions are still open
         return
     # TODO: send an email to managers / admin when all members respond
-    meeting_object.deactivate()
+    meeting.deactivate()
 
 
 post_save.connect(member_updated, sender=Member)

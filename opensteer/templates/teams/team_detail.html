@@ -1,13 +1,10 @@
 {% extends 'base.html'%}
 {% block content %}
 <h1>{{team.name}}</h1>
-<a class="card-link" href="{% url 'organizations:detail' team.organization_id %}" role="button">Back</a>
+<a class="card-link" href="/" role="button">Home</a>
 <a class="card-link" href="{% url 'teams:edit' team.id %}" role="button">Edit</a>
 <hr />
-{% url 'organizations:new-team' organization.id as button_url %}
-{% ifequal team.organization.staffs.count 0 %}
-{% include "jumbotrons/base.html" with lead="Let's invite a staff" button_text="Invite Staff" button_url=button_url %}
-{% else %}
+{% url 'teams:new' as button_url %}
 {% ifequal team.members.count 0 %}
 {% include "jumbotrons/base.html" with lead="Let's add members" button_text="Add Members" button_url=button_url %}
 {% else %}
@@ -24,9 +21,9 @@
     {% for member in team.members.all %}
     <tr>
       <td><a class="card-link" href="{% url 'teams:detail' team.id %}" role="button">
-          {{ member.staff.user.username }}</a></td>
+          {{ member.user.username }}</a></td>
       <td>{{ member.get_role_display}}</td>
-      <td>{{ member.staff.title }}</td>
+      <td>{{ member.user.title }}</td>
     </tr>
     {% endfor %}
   </tbody>

@@ -32,3 +32,20 @@ class DayOfWeek:
         FRIDAY = [4, 'Friday']
         SATURDAY = [5, 'Saturday']
         SUNDAY = [6, 'Sunday']
+
+
+@choices
+class QuestionKind:
+    class Meta:
+        TEXT = [1, 'Text']
+        NUMERIC = [2, 'Numeric']
+        BOOLEAN = [3, 'Boolean']
+        CHOICE = [4, 'Choice']
+        MULTIPLE_CHOICE = [5, 'Multiple Choice']
+
+
+@choices
+class QuestionCategory:
+    class Meta:
+        STANDUP = [1, 'Standup']
+        CHECKIN = [2, 'Checkin']

@@ -1,4 +1,4 @@
 from django.contrib import admin
-from opensteer.core.models import Company
+from opensteer.core.models import Question
 
-admin.site.register(Company)
+admin.site.register(Question)

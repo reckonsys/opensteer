@@ -1,8 +1,7 @@
 {% extends 'base.html'%}
 {% block content %}
-<h1>{{organization.name}}</h1>
-<a class="btn btn-info" href="{% url 'teams:new' organization.id %}" role="button">New Team</a>
-{% block organization_content %}
+<a class="btn btn-info" href="{% url 'teams:new' %}" role="button">New Team</a>
+{% block team_content %}
 <hr />
 {{button_url}}
 {% ifequal organization.teams.count 0 %}

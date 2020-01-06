@@ -1,12 +1,18 @@
+<div class="jumbotron">
+  <h1 class="display-4">Hello there, {{request.user.username}}!</h1>
+  <p class="lead">
+    OpenSteer is an Employee Engagement &amp; Performance Software.
+  </p>
+  <hr class="my-4">
+</div>
 {% if submissions %}
 <h1>Active Meetings</h1>
-{{ submission.id }}
 <table class="table table-borderless table-hover">
   <thead>
     <tr>
       <th scope="col">Type</th>
       <th scope="col">Team</th>
-      <th scope="col">Organization</th>
+      <th scope="col">Timestamp</th>
     </tr>
   </thead>
   <tbody>
@@ -15,43 +21,9 @@
       <td><a class="card-link" href="{% url 'submissions:detail' submission.id %}" role="button">
           {{ submission.meeting_type.name }}</a></td>
       <td>{{ submission.member.team.name }}</td>
-      <td>{{ submission.member.team.organization.name }}</td>
+      <td>{{ submission.meeting.timestamp }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-{% endif %}
-{% if organizations %}
-<h1>Organizations</h1>
-<table class="table table-borderless table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Organization</th>
-      <th scope="col">Teams</th>
-      <th scope="col">Staffs</th>
-      <th scope="col">Questions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for organization in organizations %}
-    <tr>
-      <td><a class="card-link" href="{% url 'organizations:detail' organization.id %}" role="button">
-          {{ organization.name }}</a></td>
-      <td>{{ organization.teams.count }}</td>
-      <td>{{ organization.staffs.count }}</td>
-      <td>{{ organization.questions.count }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<div class="jumbotron">
-  <h1 class="display-4">Hello there, {{request.user.username}}!</h1>
-  <p class="lead">
-    OpenSteer is an Employee Engagement &amp; Performance Software.
-  </p>
-  <hr class="my-4">
-  <p>Let's create an organization for you!</p>
-  <a class="btn btn-success btn-lg" href="{% url 'organizations:new' %}" role="button">Create Organization</a>
-</div>
 {% endif %}
